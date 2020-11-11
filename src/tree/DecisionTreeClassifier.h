@@ -93,6 +93,7 @@ class DecisionTreeClassifier{
         int predict(std::vector<int>& obs);
     private:
         void _BuildTree(std::vector<std::vector<int>>& records, std::unique_ptr<Node>& node, size_t depth);
+        int _Inference(std::vector<int>& obs, std::unique_ptr<Node>& node);
     private:
         size_t _min_num;
         int _default_class;

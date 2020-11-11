@@ -215,5 +215,21 @@ void DecisionTreeClassifier::PrintTree() const {
 
     }
 };
+int DecisionTreeClassifier::_Inference(std::vector<int>& obs, std::unique_ptr<Node>& node){
+    // stop condition for leaf node (only a leaf node has a valid class_value)
+    if (node->class_value != 100){
+        return node->class_value;
+    }
+    if (node->constraint.true_false_record(obs)){
+        return _Inference(obs, node->left_child);
+    }
+    else{
+        return _Inference(obs, node->right_child);
+    }
+};
+int DecisionTreeClassifier::predict(std::vector<int>& obs){
+    int class_prediction = _Inference(obs, _root);
+    return class_prediction;
+};
 } // namespace algo
 
