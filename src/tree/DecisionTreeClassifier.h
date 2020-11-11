@@ -46,7 +46,7 @@ class Node: public I_Printable{
         std::unique_ptr<Node> right_child;
         size_t level{0};
         size_t nbr_samples;
-        int class_value{NULL};
+        int class_value{100};
         friend class DecisionTreeClassifier;
 };
 
@@ -89,6 +89,8 @@ class DecisionTreeClassifier{
             :_min_num(min_num),  _default_class(default_class)
         {};
         void fit(std::vector<std::vector<int>>& records);
+        void PrintTree() const;
+        int predict(std::vector<int>& obs);
     private:
         void _BuildTree(std::vector<std::vector<int>>& records, std::unique_ptr<Node>& node, size_t depth);
     private:

@@ -4,6 +4,7 @@
 #include <set>
 #include <cmath>
 #include <unordered_set>
+#include <queue>
 
 namespace algo
 {
@@ -37,8 +38,12 @@ void Node::add_right_child(std::unique_ptr<Node>&& right){
 }
 void Node::print(std::ostream& os) const {
     os << "level: " << level << std::endl;
-    os << constraint;
-    os << "gini: " << gini << " || " << "class: " << class_value << std::endl;
+    os << "gini: " << gini << " || " << "samples: " << nbr_samples << std::endl;
+    if  (class_value == 100)
+        os << constraint;
+    else
+        // leaf nodes don't have constraints
+        os << "class: " << class_value << std::endl;    
 }
 std::vector<Constraint> feature_constraints(size_t& index_feature, std::set<int>& feature_values){
     // feature_values is a sorted set asc
@@ -91,7 +96,7 @@ RecordsSpliter split(const Constraint& ct, const std::vector<std::vector<int>>& 
     return sp;
 };
 
-double sub_gini_idex(std::vector<int>& classes){
+double sub_gini_idex(const std::vector<int>& classes){
     size_t size = classes.size();
     std::unordered_map<int, int> count = Counter(classes);
     double sum_prob = 0.;
@@ -148,13 +153,11 @@ void DecisionTreeClassifier::_BuildTree(std::vector<std::vector<int>>& records, 
     std::unordered_set<int> set_classes{classes.begin(), classes.end()};
     if (set_classes.size() == 1){
         std::unordered_set<int>::iterator it = set_classes.begin();
-        //node->set_class_value(*it);
         node->class_value = *it;
         return;
     }
     // records less than min_num => set the default class to this leafNode
     if (records.size() < _min_num){
-        //node->set_class_value(_default_class);
         node->class_value = _default_class;
         return;
     }
@@ -175,7 +178,6 @@ void DecisionTreeClassifier::_BuildTree(std::vector<std::vector<int>>& records, 
         node->class_value = majority_class;
         return;
     }
-    //node->set_constraint(sp.c);
     node->constraint = sp.c;
     /********Left branch***************/
     std::unique_ptr<Node> left_child = std::make_unique<Node>(sp.left_gini, depth, sp.left_nbr_samples);
@@ -189,11 +191,29 @@ void DecisionTreeClassifier::_BuildTree(std::vector<std::vector<int>>& records, 
 };
 
 void DecisionTreeClassifier::fit(std::vector<std::vector<int>>& records){
+    // setting nbr_sample and gini for the root for printing purpose
+    _root->nbr_samples = records.size();
+    std::vector<int> init_classes;
+    for (const auto &row: records)
+        init_classes.push_back(row.back());
+    _root->gini = sub_gini_idex(init_classes);
+    // build the tree
     _BuildTree(records, _root, 1);
-    std::cout << _root->constraint << std::endl;
-    std::cout << "#######################" << std::endl;
-    std::cout << *(_root->left_child) << std::endl;
-    std::cout << *(_root->right_child) << std::endl;
+};
+void DecisionTreeClassifier::PrintTree() const {
+    // BFS print mode
+    std::queue<const std::unique_ptr<Node> *> nodes_queue;
+    nodes_queue.push(&(_root));
+    while (!nodes_queue.empty()){
+        auto node = nodes_queue.front();
+        if ((*node)->left_child)
+            nodes_queue.push(&((*node)->left_child));
+        if ((*node)->right_child)
+            nodes_queue.push(&((*node)->right_child));
+        nodes_queue.pop();
+        std::cout << **node << std::endl;
+
+    }
 };
 } // namespace algo
 
