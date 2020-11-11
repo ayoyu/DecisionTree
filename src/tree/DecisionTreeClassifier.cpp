@@ -145,7 +145,7 @@ Spliter best_split(const std::vector<std::vector<int>>& records){
 
 };
 
-void DecisionTreeClassifier::_BuildTree(std::vector<std::vector<int>>& records, std::unique_ptr<Node>& node, size_t depth){
+void DecisionTreeClassifier::_BuildTree(const std::vector<std::vector<int>>& records, std::unique_ptr<Node>& node, size_t depth){
     std::vector<int> classes;
     for (const auto& row: records)
         classes.push_back(row.back());
@@ -190,7 +190,7 @@ void DecisionTreeClassifier::_BuildTree(std::vector<std::vector<int>>& records, 
 
 };
 
-void DecisionTreeClassifier::fit(std::vector<std::vector<int>>& records){
+void DecisionTreeClassifier::fit(const std::vector<std::vector<int>>& records){
     // setting nbr_sample and gini for the root for printing purpose
     _root->nbr_samples = records.size();
     std::vector<int> init_classes;
@@ -215,7 +215,7 @@ void DecisionTreeClassifier::PrintTree() const {
 
     }
 };
-int DecisionTreeClassifier::_Inference(std::vector<int>& obs, std::unique_ptr<Node>& node){
+int DecisionTreeClassifier::_Inference(const std::vector<int>& obs, std::unique_ptr<Node>& node){
     // stop condition for leaf node (only a leaf node has a valid class_value)
     if (node->class_value != 100){
         return node->class_value;
@@ -227,9 +227,12 @@ int DecisionTreeClassifier::_Inference(std::vector<int>& obs, std::unique_ptr<No
         return _Inference(obs, node->right_child);
     }
 };
-int DecisionTreeClassifier::predict(std::vector<int>& obs){
-    int class_prediction = _Inference(obs, _root);
-    return class_prediction;
+std::vector<int> DecisionTreeClassifier::predict(const std::vector<std::vector<int>>& observations){
+    std::vector<int> class_predictions;
+    for (const auto &row: observations){
+        class_predictions.push_back(_Inference(row, _root));
+    }
+    return class_predictions;
 };
 } // namespace algo
 

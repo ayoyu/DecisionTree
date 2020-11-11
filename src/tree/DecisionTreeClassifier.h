@@ -88,12 +88,12 @@ class DecisionTreeClassifier{
         DecisionTreeClassifier(size_t min_num, int default_class)
             :_min_num(min_num),  _default_class(default_class)
         {};
-        void fit(std::vector<std::vector<int>>& records);
+        void fit(const std::vector<std::vector<int>>& records);
         void PrintTree() const;
-        int predict(std::vector<int>& obs);
+        std::vector<int> predict(const std::vector<std::vector<int>>& observations);
     private:
-        void _BuildTree(std::vector<std::vector<int>>& records, std::unique_ptr<Node>& node, size_t depth);
-        int _Inference(std::vector<int>& obs, std::unique_ptr<Node>& node);
+        void _BuildTree(const std::vector<std::vector<int>>& records, std::unique_ptr<Node>& node, size_t depth);
+        int _Inference(const std::vector<int>& obs, std::unique_ptr<Node>& node);
     private:
         size_t _min_num;
         int _default_class;
