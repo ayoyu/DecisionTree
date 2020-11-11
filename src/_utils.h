@@ -6,10 +6,15 @@
 #include <tuple>
 #include <sstream>
 #include <type_traits>
+#include <unordered_map>
+#include <utility>
+#include <bits/stdc++.h>
+
 
 namespace algo
 {
 
+// Read DataFrame from a file
 class DataFrame{
 public:
     DataFrame(std::string& fp, char d, bool h)
@@ -64,4 +69,40 @@ private:
     std::vector<std::string> columns{};
 };
 
+template<typename T>
+std::unordered_map<T, int> Counter(std::vector<T> v){
+    std::unordered_map<T, int> count_v;
+    for (const auto &elem: v){
+        if (count_v.count(elem)){
+            count_v[elem] += 1;
+        }
+        else{
+            count_v[elem] = 1;
+        }
+    }
+    return count_v;
+};
+
+template<typename T>
+std::pair<T, int> most_common(std::unordered_map<T, int> mp){
+    std::vector<std::pair<T, int>> mp_v;
+    for (const auto &elem: mp){
+        mp_v.push_back(elem);
+    }
+    std::sort(
+        mp_v.begin(),
+        mp_v.end(),
+        [](const std::pair<T, int>& p1, const std::pair<T, int>& p2) -> bool{
+            return p1.second > p2.second;
+        }
+    );
+    return mp_v[0];
+};
+
+class I_Printable{
+    friend std::ostream& operator<<(std::ostream& os, const I_Printable& obj);
+    public:
+        virtual void print(std::ostream& os) const = 0;
+        virtual ~I_Printable(){};
+};
 }
