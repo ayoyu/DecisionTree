@@ -4,6 +4,8 @@
 
 namespace algo
 {
+namespace exceptions{
+
 class FileNotFound: public std::exception{
 public:
     FileNotFound(std::string msg)
@@ -28,5 +30,5 @@ class ValueError: public std::exception{
     private:
         std::string _msg;
 };
-
+}
 }

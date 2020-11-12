@@ -238,7 +238,7 @@ public:
         std::vector<int> class_predictions;
         for (const auto &row: observations){
             if (row.size() != nbr_of_features)
-                throw ValueError("Number of features of the model must match the input. Model nbr of features is " + std::to_string(nbr_of_features));
+                throw exceptions::ValueError("Number of features of the model must match the input. Model nbr of features is " + std::to_string(nbr_of_features));
             int pred = _Inference(row, _root);
             class_predictions.push_back(pred);
         }
