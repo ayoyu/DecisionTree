@@ -1,5 +1,5 @@
 # :u6e80: AlgoFun
-## Template Library for Tree and Graph Algortihms
+## Template Library for Tree and Graph Algorithms
 ### Under development :construction: (:bulb:Examples will be provided at each stage of the implementation of certain algorithms)
 
 ## Cmake Building
