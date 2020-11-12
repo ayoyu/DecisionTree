@@ -10,10 +10,12 @@
 #include <utility>
 #include <bits/stdc++.h>
 #include <typeinfo>
-
+#include <cmath>
 
 namespace algo
 {
+
+namespace util{
 
 // Read DataFrame from a file
 class DataFrame{
@@ -114,10 +116,22 @@ std::pair<T, int> most_common(std::unordered_map<T, int> mp){
     return mp_v[0];
 };
 
+double sub_gini_index(std::vector<int>& classes){
+    size_t size = classes.size();
+    std::unordered_map<int, int> count = Counter(classes);
+    double sum_prob = 0.;
+    for (const auto &c: count){
+        sum_prob += std::pow((1. * c.second / size), 2);
+    }
+    double gini = 1. - sum_prob;
+    return gini;
+};
+
 class I_Printable{
     friend std::ostream& operator<<(std::ostream& os, const I_Printable& obj);
     public:
         virtual void print(std::ostream& os) const = 0;
         virtual ~I_Printable(){};
 };
+}
 }
