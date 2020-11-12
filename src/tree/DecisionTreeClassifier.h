@@ -97,8 +97,9 @@ class DecisionTreeClassifier{
     private:
         size_t _min_num;
         int _default_class;
-        size_t _max_depth;
+        size_t _max_depth{0};
         std::unique_ptr<Node> _root = std::make_unique<Node>();
+        //size_t nbr_of_features;
 };
 
 }

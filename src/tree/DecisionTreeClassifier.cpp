@@ -161,8 +161,8 @@ void DecisionTreeClassifier::_BuildTree(const std::vector<std::vector<int>>& rec
         node->class_value = _default_class;
         return;
     }
-    // stop if depth exceeds max_depth
-    if (!_max_depth){
+    // stop if depth exceeds max_depth (if max_depth is provided by the user)
+    if (_max_depth != 0){
         if (depth >= _max_depth){
             node->class_value = _default_class;
             return;
@@ -191,12 +191,14 @@ void DecisionTreeClassifier::_BuildTree(const std::vector<std::vector<int>>& rec
 };
 
 void DecisionTreeClassifier::fit(const std::vector<std::vector<int>>& records){
-    // setting nbr_sample and gini for the root for printing purpose
+    // setting nbr_samples and gini for the root for printing purpose
     _root->nbr_samples = records.size();
     std::vector<int> init_classes;
     for (const auto &row: records)
         init_classes.push_back(row.back());
     _root->gini = sub_gini_idex(init_classes);
+    // setting the number of features for controlling purpose when we do prediction
+    //nbr_of_features = records[0].size() - 1; 
     // build the tree
     _BuildTree(records, _root, 1);
 };
@@ -230,7 +232,10 @@ int DecisionTreeClassifier::_Inference(const std::vector<int>& obs, std::unique_
 std::vector<int> DecisionTreeClassifier::predict(const std::vector<std::vector<int>>& observations){
     std::vector<int> class_predictions;
     for (const auto &row: observations){
-        class_predictions.push_back(_Inference(row, _root));
+        // if (row.size() != nbr_of_features)
+        //     throw ValueError("Number of features of the model must match the input. Model nbr of features is " + std::to_string(nbr_of_features));
+        int pred = _Inference(row, _root);
+        class_predictions.push_back(pred);
     }
     return class_predictions;
 };
