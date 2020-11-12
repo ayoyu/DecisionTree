@@ -198,7 +198,7 @@ void DecisionTreeClassifier::fit(const std::vector<std::vector<int>>& records){
         init_classes.push_back(row.back());
     _root->gini = sub_gini_idex(init_classes);
     // setting the number of features for controlling purpose when we do prediction
-    //nbr_of_features = records[0].size() - 1; 
+    nbr_of_features = records[0].size() - 1; 
     // build the tree
     _BuildTree(records, _root, 1);
 };
@@ -232,8 +232,8 @@ int DecisionTreeClassifier::_Inference(const std::vector<int>& obs, std::unique_
 std::vector<int> DecisionTreeClassifier::predict(const std::vector<std::vector<int>>& observations){
     std::vector<int> class_predictions;
     for (const auto &row: observations){
-        // if (row.size() != nbr_of_features)
-        //     throw ValueError("Number of features of the model must match the input. Model nbr of features is " + std::to_string(nbr_of_features));
+        if (row.size() != nbr_of_features)
+            throw ValueError("Number of features of the model must match the input. Model nbr of features is " + std::to_string(nbr_of_features));
         int pred = _Inference(row, _root);
         class_predictions.push_back(pred);
     }
