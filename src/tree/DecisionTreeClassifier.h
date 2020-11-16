@@ -64,11 +64,14 @@ public:
     void print(std::ostream& os) const {
         os << "level: " << level << std::endl;
         os << "gini: " << gini << " || " << "samples: " << nbr_samples << std::endl;
-        if (class_value == 100)
+        if (!this->is_leaf())
             os << constraint;
         else
             // leaf nodes don't have constraints
             os << "class: " << class_value << std::endl;
+    }
+    bool is_leaf() const{
+        return (!left_child && !right_child);
     }
 private:
     Constraint<T> constraint;
@@ -77,7 +80,7 @@ private:
     std::unique_ptr<Node<T>> right_child;
     size_t level{0};
     size_t nbr_samples;
-    int class_value{100};
+    int class_value;
     friend class DecisionTreeClassifier<T>;
 };
 
@@ -288,8 +291,7 @@ private:
         _BuildTree(sp.right_records, node->right_child, depth+1);
     }
     int _Inference(const std::vector<T>& obs, std::unique_ptr<Node<T>>& node){
-        // stop condition for leaf node (only a leaf node has a valid class_value)
-        if (node->class_value != 100){
+        if (node->is_leaf()){
             return node->class_value;
         }
         if (node->constraint.true_false_record(obs)){
