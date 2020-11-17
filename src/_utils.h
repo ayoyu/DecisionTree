@@ -85,7 +85,7 @@ private:
     bool header;
     std::vector<std::string> columns{};
 };
-
+//TODO: pass v by const refrence
 template<typename T>
 std::unordered_map<T, int> Counter(std::vector<T> v){
     std::unordered_map<T, int> count_v;
@@ -99,7 +99,7 @@ std::unordered_map<T, int> Counter(std::vector<T> v){
     }
     return count_v;
 };
-
+//TODO: pass mp by const reference
 template<typename T>
 std::pair<T, int> most_common(std::unordered_map<T, int> mp){
     std::vector<std::pair<T, int>> mp_v;
@@ -126,6 +126,8 @@ double sub_gini_index(std::vector<int>& classes){
     double gini = 1. - sum_prob;
     return gini;
 };
+
+double variance(const std::vector<double>& labels); 
 
 class I_Printable{
     friend std::ostream& operator<<(std::ostream& os, const I_Printable& obj);
