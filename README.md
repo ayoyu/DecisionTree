@@ -1,6 +1,6 @@
-# :u6e80: TgAlgo
-## Template Library for Tree and Graph Algorithms
-### Under development :construction: (:bulb:Examples will be provided at each stage of the implementation of certain algorithms)
+# Decision Trees
+## Template Library for Decision Tree Algorithms
+### (Examples will be provided at each stage of the implementation of certain algorithms)
 
 ## Cmake Building
 ```shell
